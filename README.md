@@ -39,7 +39,7 @@ The app may be hosted on my site. Check back later.
 
 #### notes on reliability
 
-Commonsensically, the proper functioning of **woke** is totally contingent upon a reliable/persistent
+Commonsensically, the proper functioning of **woke** is totally contingent upon a reliable/persistent ...
 
 - browser *(don't close or refresh the tab while the timer's running!)*
 - power source *(plug in your alarm-armed laptop before going to sleep!)*
