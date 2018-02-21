@@ -1,12 +1,13 @@
 {
   "name": "woke",
   "version": "0.0.1",
-  "description": "alarm, timer, clock, etc. web app",
+  "description": "alarmer, timer, stopper, clock web app",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
     "dev": "webpack -d --watch",
-    "prod": "webpack --env.prod --optimize-minimize --progress"
+    "prod": "webpack --env.prod --optimize-minimize --progress",
+    "serve": "python -m SimpleHTTPServer 8002"
   },
   "repository": {
     "type": "git",

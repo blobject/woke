@@ -1,0 +1,171 @@
+body, input {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 700;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #3f51b5;
+  text-decoration: none;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.foot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 15px;
+  background: rgb(255, 255, 255) transparent;
+  background: rgba(255, 255, 255, .2);
+  color: #a0a0a0;
+  padding: 5px 10px;
+  text-align: right;
+}
+
+.foot a {
+  opacity: .5;
+}
+
+.foot a:focus,
+.foot a:hover {
+  opacity: 1;
+}
+
+.foot img {
+  height: 24px;
+  vertical-align: middle;
+}
+
+.timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  color: #b0b0c0;
+  height: 100%;
+  width: 100%;
+  padding-top: 15vh;
+}
+
+.timer.bip, .timer.bip .part {
+  background-color: #ff9966;
+}
+
+.timer.bip .part {
+  border-color: #ff9966;
+}
+
+.timer.bop, .timer.bop .part {
+  background-color: #ffe5b4;
+}
+
+.timer.bop .part {
+  border-color: #ffe5b4;
+}
+
+.timer.beep .time,
+.timer.beep .time .part,
+.timer.beep .sound,
+.timer.beep .count {
+  color: #606060;
+}
+
+.timer .sound {
+  font-size: 2vw;
+  margin-bottom: 3vh;
+}
+
+.timer .sound .label {
+  font-weight: 500;
+}
+
+.timer .time,
+.timer .part {
+  font-size: 12vw;
+  font-weight: 500;
+  color: #c0c0d0;
+}
+
+.timer .time {
+  margin-right: .5vw;
+}
+
+.timer .time.running,
+.timer .time.running .part {
+  color: #000000;
+}
+
+.timer .part {
+  display: inline-block;
+  background-color: #f0f0ff;
+  margin: 0px -1vw 0 -.5vw;
+  padding: .4vw 0 0 1.2vw;
+  border: 2px dashed #d0d0e0;
+  border-radius: 8px;
+  width: 17vw;
+}
+
+.timer .part:focus,
+.timer .part:hover {
+  color: #a0a0b0;
+}
+
+.timer .time.running .part {
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+
+.timer .count {
+  font-size: 2vw;
+  margin-top: 2vh;
+}
+
+.timer .button,
+.timer .stop-button {
+  cursor: pointer;
+  font-size: 4vw;
+}
+
+.timer .button {
+  background-color: #e0e0e0;
+  color: #606060;
+  margin-top: 4vh;
+  padding: 6px 2vw;
+  border-radius: 4px;
+  border-bottom: 3px solid #c0c0c0;
+}
+
+.timer .button:focus,
+.timer .button:hover {
+  background-color: #e6e6fa;
+  color: #796878;
+  border-color: #d6cadd;
+}
+
+.timer .button.disabled {
+  cursor: not-allowed;
+  background-color: #f0f0f0;
+  color: #d0d0d0;
+  border-bottom-color: #e0e0e0;
+}
+
+.timer .stop-button {
+  color: #b0b0b0;
+  margin-top: 3vh;
+  padding: 6px 3vw;
+}
+
+.timer .stop-button:focus,
+.timer .stop-button:hover {
+  color: #404040;
+}
