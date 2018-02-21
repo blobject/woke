@@ -1,20 +1,21 @@
 // TODO
-// - fix input
-// - visual beep
 // - sound selection
 // - sound preview
-// - snooze
+// - keyboard control
 // - consider connection to clock
 
-import moment from 'moment'
-import React, {Component} from 'react'
-import Sound from 'react-sound'
+import moment from "moment"
+import React, {Component} from "react"
+import Howl from "react-howler"
 
 // global constants
-const S = Object.freeze({beeping: {}, running: {}, stopped: {}})
-const TICK = 1000  // msec
+const S = Object.freeze({beeping: {}, running: {}, stopped: {}, paused: {}})
+const V = Object.freeze({bip: {}, bop: {}})
+const SOUND = "/pub/sound/alarm.mp3"
+const TICK = 1000 // msec
 
 // helpers
+const basename = (x) => new String(x).substring(x.lastIndexOf("/") + 1)
 const pad = (x) => ("00" + x).slice(-2)
 const parts = (x) => {
   const t = moment.duration(x)
@@ -39,10 +40,11 @@ class App extends Component {
   state = {
     status: S.stopped,
     timer: null,
+    visual: null,
     count: -1,
-    hour: 0,
-    minute: 0,
-    second: 0
+    hour: "00",
+    minute: "00",
+    second: "00"
   }
 
   constructor(props) {
@@ -52,74 +54,100 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    this._stop()  // probably unused
+    this._restart() // probably unused
   }
 
   _onButtonClick = () => {
     const {status} = this.state
-    if      (status === S.stopped)  this._start()
-    else if (status === S.running) this._stop()
-    else if (status === S.beeping)  this._stop()
-    else console.log('unknown status')
+    if      (status === S.stopped) this._start()
+    else if (status === S.running) this._pause()
+    else if (status === S.beeping) this._restart()
+    else if (status === S.paused)  this._start()
+    else console.log("unknown status")
   }
 
   _onInputChange = (e) => {
     const t = e.target
-    // presumes the relevant className to be @ index 1
-    this.setState({[t.className.split(" ")[1]]: pad(t.value)})
-    this._updateCount() // must come after setState
+    const c = t.className.split(" ")[1] // index presumed
+    const v = pad(t.value)
+    this.setState({[c]: v})
+    this._updateCount(c, v) // must come after setState
   }
 
-  _updateCount = () => {
+  _updateCount = (c, v) => {
     const {hour, minute, second} = this.state
-    this.setState({count: ((Number(hour) * 60 * 60)
-                         + (Number(minute) * 60)
-                         + Number(second)) * 1000})
+    const t = {hour, minute, second}
+    t[c] = v
+    this.setState({count: ((Number(t.hour) * 60 * 60)
+                         + (Number(t.minute) * 60)
+                         + Number(t.second)) * 1000})
   }
 
   _start = () => {
-    console.log(this.state.count)
     let timer = setInterval(this._tick, TICK)
     this.setState({status: S.running, timer})
   }
 
   _beep = () => {
-    clearInterval(this.state.timer)
     this.setState({status: S.beeping, count: 0})
   }
 
-  // for both cancelling and shutting-up
-  _stop = () => {
+  _pause = () => {
     clearInterval(this.state.timer)
-    this.setState({status: S.stopped, timer: null, count: -1})
+    this.setState({status: S.paused})
+  }
+
+  // for both cancelling and shutting-up
+  _restart = () => {
+    clearInterval(this.state.timer)
+    this.setState({
+      status: S.stopped, visual: null, timer: null,
+      count: -1, hour: "00", minute: "00", second: "00"
+    })
   }
 
   _tick = () => {
-    const {count} = this.state
-    const next = count - TICK
-    if (next <= 0) { this._beep(); return }
-    this.setState({count: next})
+    const {count, visual} = this.state
+    if      (visual === V.bip) this.setState({visual: V.bop})
+    else if (visual === V.bop) this.setState({visual: V.bip})
+    else {
+      const next = count - TICK
+      if (next <= 0) {
+        this.setState({visual: V.bip})
+        this._beep()
+        return
+      }
+      this.setState({count: next})
+    }
   }
 
   render() {
-    const {count, status, timer,
+    const {count, status, visual, timer,
            hour, minute, second} = this.state
     const beeping = status === S.beeping
     const running = status === S.running
     const stopped = status === S.stopped
-    const flag = beeping ? Sound.status.PLAYING : Sound.status.STOPPED
-    const text = beeping ? "shut up" : running ? "cancel" : "start"
+    const paused  = status === S.paused
+    const bip = visual === V.bip
+    const bop = visual === V.bop
+    const waiting = stopped && count <= 0
+    const play = beeping ? true : false
+    const text = beeping ? "shut up"
+               : running ? "pause"
+               : paused ? "resume"
+               : "start"
     const time = parts(count)
 
     return (
-      <div className="app">
-        <Sound
-          url="/pub/sound/alarm.mp3"
+      <div className={"app" + (bip ? " beep bip" : bop ? " beep bop" : "")}>
+        <Howl
+          src={SOUND}
+          playing={play}
           loop={true}
-          playStatus={flag}
+          preload={true}
         />
         <div className="sound">
-          <span className="label">sound:</span> alarm.mp3
+          <span className="label">sound:</span> {basename(SOUND)}
         </div>
         <div className={"time" + (running ? " running" : "")}>
           {Part("hour", time.hour, this._onInputChange)}
@@ -127,8 +155,8 @@ class App extends Component {
           :{Part("second", time.second, this._onInputChange)}
         </div>
         <div className="count">{count < 0 ? 0 : count / 1000}</div>
-        <div className="button"
-             onClick={this._onButtonClick}>
+        <div className={"button" + (waiting ? " disabled" : "")}
+             onClick={waiting ? null : this._onButtonClick}>
           {text}
         </div>
       </div>
