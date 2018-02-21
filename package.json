@@ -22,8 +22,10 @@
   },
   "homepage": "https://github.com/agarick/woke",
   "dependencies": {
+    "moment": "^2.20.1",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "react-sound": "^1.1.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
