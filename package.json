@@ -1,0 +1,36 @@
+{
+  "name": "woke",
+  "version": "0.0.1",
+  "description": "alarm, timer, clock, etc. web app",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack -d --watch",
+    "prod": "webpack --env.prod --optimize-minimize --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agarick/woke.git"
+  },
+  "bugs": {
+    "url": "https://github.com/agarick/woke/issues"
+  },
+  "author": {
+    "name": "agaric",
+    "email": "agaric@protonmail.com",
+    "url": "https://alocy.be"
+  },
+  "homepage": "https://github.com/agarick/woke",
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "webpack": "^3.11.0"
+  }
+}
