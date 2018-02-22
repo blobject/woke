@@ -1,4 +1,4 @@
-body, input {
+body, button, input {
   font-family: 'Roboto Mono', monospace;
   font-weight: 700;
 }
@@ -23,13 +23,27 @@ a {
 .foot {
   position: absolute;
   bottom: 0;
+  left: 0;
   right: 0;
-  font-size: 15px;
+}
+
+.foot .left,
+.foot .right {
   background: rgb(255, 255, 255) transparent;
   background: rgba(255, 255, 255, .2);
-  color: #a0a0a0;
   padding: 5px 10px;
-  text-align: right;
+  border-radius: 4px;
+}
+
+.foot .left {
+  float: left;
+  color: #b0b0b0;
+}
+
+.foot .right {
+  float: right;
+  font-size: 15px;
+  color: #a0a0a0;
 }
 
 .foot a {
@@ -134,6 +148,7 @@ a {
 .timer .stop-button {
   cursor: pointer;
   font-size: 4vw;
+  border: none;
 }
 
 .timer .button {
@@ -160,6 +175,7 @@ a {
 }
 
 .timer .stop-button {
+  background: inherit;
   color: #b0b0b0;
   margin-top: 3vh;
   padding: 6px 3vw;
