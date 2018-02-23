@@ -36,22 +36,14 @@ npm run serve # or run this in another shell
 
 #### common todo
 
+- keyboard control
 - sound selection
 - sound preview
 - theme selection
 
-#### notes on reliability
-
-- Commonsensically, the proper functioning of **woke** is totally contingent upon a persistent ...
-  - browser *(don't close or refresh the tab while the timer's running!)*
-  - power source *(plug in your alarm-armed laptop before going to sleep!)*
-  - audio source *(sound file good? volume good? browser's channel free?\*)*  
-    \* some sound systems (eg. on linux) might have trouble getting multiple applications to produce sound simultaneously.
-- Once the page (the js) has loaded, an internet connection will not be a necessity. When run locally, not a necessity at all.
-
 ### includes
 
+- [moment](http://momentjs.com/)
 - [react](https://reactjs.org/) et al.
 - [react-howler](https://github.com/thangngoc89/react-howler)
 - [react-keydown](https://github.com/glortho/react-keydown)
-- [moment](http://momentjs.com/)

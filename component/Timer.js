@@ -12,8 +12,13 @@ const TICK = 1000 // msec
 
 // helpers
 const basename = (s) => new String(s).substring(s.lastIndexOf("/") + 1)
-const clone = (h) => JSON.parse(JSON.stringify(h))
+const partname = (e) => e.parentNode.className
+const clone = (o) => JSON.parse(JSON.stringify(o))
 const pad = (n) => ("00" + n).slice(-2)
+const bottom = (n, s) => {
+  const d = s === "hour" ? 3600 : s === "minute" ? 60 : 1
+  return Math.floor(n / 1000 / d) === 0
+}
 const parts = (n) => {
   const t = Moment.duration(n)
   return {
@@ -23,6 +28,19 @@ const parts = (n) => {
   }
 }
 
+// subcomponents
+
+const Part = (v, c, k, d) => (
+  <input type="text" value={v} onChange={c} onKeyDown={k} disabled={d} />
+)
+
+// show can be null, so explicitly check for false
+const Arrow = (dir, click, hid, show) => (
+  <div className={dir + (hid ? " hid" : show === false ? " dim" : "")}
+       onClick={hid || show === false ? null : click}>
+  </div>
+)
+
 @Keydown
 class Timer extends Component {
   constructor(props) {
@@ -31,12 +49,13 @@ class Timer extends Component {
       status: null,
       timer: null,
       visual: null,
-      count: 0,
+      count: 0, // the view-determining central value, in ms
       hour: "00",
       minute: "00",
       second: "00"
     }
     this.state = clone(this.defaultState)
+    this._onArrowClick = this._onArrowClick.bind(this)
     this._onButtonClick = this._onButtonClick.bind(this)
     this._onInputChange = this._onInputChange.bind(this)
     this._onKeydown = this._onKeydown.bind(this)
@@ -60,27 +79,26 @@ class Timer extends Component {
     else console.log("unknown status")
   }
 
-  _onInputChange = (e) => {
-    const t = e.target
-    const c = t.className.split(" ")[1] // index presumed
-    const v = pad(t.value)
-    this.setState({[c]: v})
-    this._updateCount(c, v)
+  _onInputChange = (event) => {
+    const target = event.target
+    this._updateTime(this._countPart(partname(target), pad(target.value)))
   }
 
-  _onKeydown(event, isInput) {
+  _onKeydown(event) {
     if (!(event.type === "keydown")) return
     const key = event.key;
+    const target = event.target;
+    // pressing "Enter" or "space" on a button overlaps with _onButtonClick,
+    // and latter should take precedence
+    const isButton = target.nodeName === "BUTTON"
+    const isInput = target.nodeName === "INPUT"
+
     const {status, count} = this.state
     const stopped = !status
     const beeping = status === S.beeping
     const paused  = status === S.paused
     const running = status === S.running
     const ready   = stopped && count > 0
-    // pressing "Enter" or "space" on a button overlaps with _onButtonClick,
-    // and latter should take precedence
-    const isButton = event.srcElement
-                  && event.srcElement.nodeName === "BUTTON"
 
     // concerns <body>, <button>, <input>
     if (key === "Enter" || key === " ") {
@@ -94,26 +112,59 @@ class Timer extends Component {
     }
 
     // concerns <input> only
-    const inputAllowed = ["Alt", "Control", "Shift", "Meta",
-                          "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
-                          "Tab", "Backspace", "Delete"]
     if (isInput) {
-      if (inputAllowed.includes(key)) {
+      const part = partname(target)
+      const cls = target.className
+      const val = Number(target.value)
+      const inputAllowed = ["Alt", "Control", "Shift", "Meta",
+                            "ArrowLeft", "ArrowRight",
+                            "Tab", "Backspace", "Delete"]
+
+      if (key === "ArrowUp") {
+        event.preventDefault()
+        this._inc(true, part, val)
+      } else if (key === "ArrowDown") {
+        event.preventDefault()
+        if (count > 0 && !bottom(count, part))
+          this._inc(false, part, val)
+
+      } else if (inputAllowed.includes(key)) {
         return
 
-      } else if (isNaN(key)) { // now only accept digits
+      } else if (isNaN(key)) { // now, only accept digits
         event.preventDefault()
       }
     }
   }
 
-  _updateCount = (c, v) => {
-    const {hour, minute, second} = this.state
-    const t = {hour, minute, second}
-    t[c] = v
-    this.setState({count: ((Number(t.hour) * 60 * 60)
-                         + (Number(t.minute) * 60)
-                         + Number(t.second)) * 1000})
+  _onArrowClick = (event) => {
+    const target = event.target
+    const cls = target.className
+    const part = partname(target)
+    this._inc(cls === "up", part, Number(this.state[part]))
+  }
+
+  _inc = (dir, part, val) => {
+    this._updateTime(this._countPart(part, val + (dir ? 1 : -1)))
+  }
+
+  _start = () => {
+    this.setState({status: S.running, timer: setInterval(this._tick, TICK)})
+  }
+
+  _beep = () => {
+    this.setState({status: S.beeping, count: 0})
+  }
+
+  _pause = () => {
+    clearInterval(this.state.timer)
+    this.setState({status: S.paused})
+  }
+
+  // for both cancelling and shutting-up
+  _stop = () => {
+    clearInterval(this.state.timer)
+    this.setState(clone(this.defaultState))
   }
 
   _tick = () => {
@@ -127,51 +178,37 @@ class Timer extends Component {
         this._beep()
         return
       }
-      const t = parts(next)
-      this.setState({
-        count: next,
-        hour: t.hour,
-        minute: t.minute,
-        second: t.second
-      })
+      this._updateTime(next)
     }
   }
 
-  _start = () => {
-    this.setState({
-      status: S.running,
-      timer: setInterval(this._tick, TICK)
-    })
+  _countPart = (part, val) => {
+    const {hour, minute, second} = this.state
+    const time = {hour, minute, second}
+    time[part] = val
+    return ((Number(time.hour) * 60 * 60)
+          + (Number(time.minute) * 60)
+          + Number(time.second)) * 1000
   }
 
-  _beep = () => {
-    this.setState({
-      status: S.beeping,
-      count: 0
-    })
-  }
-
-  _pause = () => {
-    clearInterval(this.state.timer)
-    this.setState({
-      status: S.paused
-    })
-  }
-
-  // for both cancelling and shutting-up
-  _stop = () => {
-    clearInterval(this.state.timer)
-    this.setState(clone(this.defaultState))
+  _updateTime = (count) => {
+    const time = parts(count)
+    const {hour, minute, second} = time
+    this.setState({count, hour, minute, second})
   }
 
   render() {
-    const {count, status, visual, timer, hour, minute, second} = this.state
+    const {status, visual, timer, count, hour, minute, second} = this.state
+    const ac = this._onArrowClick
+    const bc = this._onButtonClick
+    const ic = this._onInputChange
+    const kd = this._onKeydown
     const stopped = !status
     const beeping = status === S.beeping
     const paused  = status === S.paused
     const running = status === S.running
     const unready = stopped && count <= 0 // for disabling button
-    const blocked = beeping || running // for disabling input
+    const blocked = beeping || running    // for disabling inputs
     const bip = visual === V.bip
     const bop = visual === V.bop
     const play = beeping ? true : false
@@ -183,46 +220,36 @@ class Timer extends Component {
 
     return (
       <div className={"timer" + (bip ? " beep bip" : bop ? " beep bop" : "")}>
-        <Howl
-          src={SOUND}
-          playing={play}
-          loop={true}
-          preload={true}
-        />
-        <div className="sound">
-          <span className="label">sound:</span> {basename(SOUND)}
+        <Howl src={SOUND} loop={true} playing={play} preload={true} />
+        <div className="info">
+          <div className="sound">
+            <span className="label">sound:</span> {basename(SOUND)}
+          </div>
+          <div className="count">{count <= 0 ? 0 : count / 1000}</div>
         </div>
         <div className={"time" + (running ? " running" : "")}>
-          <input className={"part hour"}
-                 type="text"
-                 value={pad(time.hour)}
-                 onChange={this._onInputChange}
-                 onKeyDown={e => this._onKeydown(e, true)}
-                 disabled={blocked}
-          />:
-          <input className={"part minute"}
-                 type="text"
-                 value={pad(time.minute)}
-                 onChange={this._onInputChange}
-                 onKeyDown={e => this._onKeydown(e, true)}
-                 disabled={blocked}
-          />:
-          <input className={"part second"}
-                 type="text"
-                 value={pad(time.second)}
-                 onChange={this._onInputChange}
-                 onKeyDown={e => this._onKeydown(e, true)}
-                 disabled={blocked}
-          />
+          <div className="hour">
+            {Arrow("up", ac, blocked)}
+            {Part(time.hour, ic, kd, blocked)}
+            {Arrow("down", ac, blocked, !bottom(count, "hour"))}
+          </div>:
+          <div className="minute">
+            {Arrow("up", ac, blocked)}
+            {Part(time.minute, ic, kd, blocked)}
+            {Arrow("down", ac, blocked, !bottom(count, "minute"))}
+          </div>:
+          <div className="second">
+            {Arrow("up", ac, blocked)}
+            {Part(time.second, ic, kd, blocked)}
+            {Arrow("down", ac, blocked, count > 0)}
+          </div>
         </div>
-        <div className="count">{count < 0 ? 0 : count / 1000}</div>
         <button className={"button" + (unready ? " disabled" : "")}
-             onClick={unready ? null : this._onButtonClick}>
+                onClick={unready ? null : bc}>
           {text}
         </button>
         {paused && (
-          <button className="stop-button"
-               onClick={e => { this._stop() }}>
+          <button className="stop-button" onClick={this._stop}>
             stop
           </button>
         )}
