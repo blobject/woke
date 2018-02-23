@@ -1,16 +1,16 @@
 # woke
 
-[page]: https://alocy.be/dev/woke/
+[page]: https://agaric.net/dev/woke/
 
-**woke** is an alarmer/timer/stopper/clock for the browser. For those (rare) occasions where the phone is less handy, or you want to see the time on a bigger screen, or you need the functionality with just a browser and an internet connection.
+**woke** is a countdown alarm clock for the browser. For those (rare) occasions where the phone is less handy, or you want to see the timer on a bigger screen, or you need the functionality with just a browser and an internet connection.
 
-Status: pre-alpha.
+Status: beta
 
 Backstory: Lost my phone and gotta wake up tomorrow.
 
 ### use it!
 
-[alocy.be/dev/woke][page]
+[agaric.net/dev/woke][page]
 
 ### run it locally
 
@@ -27,16 +27,13 @@ npm run serve # or run this in another shell
 
 ### functionality
 
-#### parts
-
-- alarmer *TODO: basic, snoozing*
-- timer
-- stopper *TODO: basic*
-- clock *TODO: basic, timezone detection, time configuration*
-
-#### common todo
-
+- h, m, s configuration
+- see countdown
+- audio + visual beep
 - keyboard control
+
+#### todo
+
 - sound selection
 - sound preview
 - theme selection
@@ -44,6 +41,6 @@ npm run serve # or run this in another shell
 ### includes
 
 - [moment](http://momentjs.com/)
-- [react](https://reactjs.org/) et al.
+- [react](https://reactjs.org/), [babel](https://babeljs.io/), [webpack](https://webpack.github.io/)
 - [react-howler](https://github.com/thangngoc89/react-howler)
 - [react-keydown](https://github.com/glortho/react-keydown)

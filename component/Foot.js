@@ -13,7 +13,7 @@ const Foot = () => (
         <img src={prefix("/pub/img/github.png")} />
       </a>
       {" "}brought to you by
-      {" "}<a href="https://alocy.be">agaric</a>
+      {" "}<a href="https://agaric.net">agaric</a>
     </div>
   </div>
 )

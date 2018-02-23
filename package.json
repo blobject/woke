@@ -1,7 +1,7 @@
 {
   "name": "woke",
   "version": "0.0.1",
-  "description": "alarmer, timer, stopper, clock web app",
+  "description": "countdown alarm clock",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "author": {
     "name": "agaric",
     "email": "agaric@protonmail.com",
-    "url": "https://alocy.be"
+    "url": "https://agaric.net"
   },
   "homepage": "https://github.com/agarick/woke",
   "dependencies": {
