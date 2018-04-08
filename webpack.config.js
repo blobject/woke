@@ -2,7 +2,7 @@ const path = require('path')
 
 module.exports = (env = {}) => {
   const cfg = {
-    entry: ['./index.js'],
+    entry: ['babel-polyfill', './index.js'],
     output: {
       path: path.resolve(__dirname, './pub/dist'),
       filename: 'woke.js'
