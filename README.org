@@ -1,0 +1,44 @@
+* woke
+
+*woke* is a countdown alarm clock for the browser. For those (rare) occasions where the phone is less handy, or you want to see the timer on a bigger screen, or you need the functionality with just a browser and an internet connection.
+
+Status: beta
+
+Backstory: Lost my phone and gotta wake up tomorrow.
+
+*** use it!
+
+[[https://agaric.net/dev/woke/]]
+
+*** run it locally
+
+#+BEGIN_SRC sh
+cd woke
+mkdir -p pub/sound
+cp /YOUR/ALARM/SOUND/FILE.mp3 pub/sound/alarm.mp3
+cp index.dev.html index.html
+npm install
+npm run dev   # either background this: &
+npm run serve # or run this in another shell
+# visit localhost:8002 in a js-enabled browser
+#+END_SRC
+
+*** functionality
+
+- h, m, s configuration
+- see countdown
+- audio + visual beep
+- keyboard control
+
+**** todo
+
+- sound selection
+- sound preview
+- theme selection
+
+*** includes
+
+- [[http://momentjs.com/][moment]]
+- [[https://reactjs.org/][react]], [[https://babeljs.io/][babel]], [[https://webpack.github.io/][webpack]]
+- [[https://github.com/thangngoc89/react-howler][react-howler]]
+- [[https://github.com/glortho/react-keydown][react-keydown]]
