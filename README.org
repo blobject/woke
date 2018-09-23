@@ -8,7 +8,7 @@ Backstory: Lost my phone and gotta wake up tomorrow.
 
 *** use it!
 
-[[https://agaric.net/dev/woke/]]
+[[https://b.agaric.net/dev/woke/]]
 
 *** run it locally
 

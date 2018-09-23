@@ -11,17 +11,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/agarick/woke.git"
+    "url": "https://github.com/blobject/woke.git"
   },
   "bugs": {
-    "url": "https://github.com/agarick/woke/issues"
+    "url": "https://github.com/blobject/woke/issues"
   },
   "author": {
     "name": "agaric",
     "email": "agaric@protonmail.com",
-    "url": "https://agaric.net"
+    "url": "https://b.agaric.net"
   },
-  "homepage": "https://github.com/agarick/woke",
+  "homepage": "https://github.com/blobject/woke",
   "dependencies": {
     "moment": "^2.20.1",
     "react": "^16.2.0",
