@@ -6,8 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack -d --watch",
-    "prod": "webpack --env.prod --optimize-minimize --progress",
-    "serve": "python -m SimpleHTTPServer 8002"
+    "prod": "webpack --env.prod --optimize-minimize --progress"
   },
   "repository": {
     "type": "git",

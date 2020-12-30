@@ -18,9 +18,9 @@ mkdir -p pub/sound
 cp /YOUR/ALARM/SOUND/FILE.mp3 pub/sound/alarm.mp3
 cp index.dev.html index.html
 npm install
-npm run dev   # either background this: &
-npm run serve # or run this in another shell
-# visit localhost:8002 in a js-enabled browser
+npm run dev
+# start a webserver like python -m http.server 8000
+# visit localhost:8000 in a js-enabled browser
 #+END_SRC
 
 *** functionality
