@@ -1,5 +1,7 @@
+.hg/
+.hgignore
 node_modules/
-*.*info
 *.log
 /pub/*
 !/pub/css
+/package-lock.json
